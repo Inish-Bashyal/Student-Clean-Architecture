@@ -53,6 +53,7 @@ dependencies:
   awesome_dio_interceptor: ^1.0.0
   image_picker: ^0.8.9
   permission_handler: ^10.3.0
+  jwt_decoder: ^2.0.1
 
 
 dev_dependencies:
