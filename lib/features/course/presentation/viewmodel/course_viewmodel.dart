@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:student_clean_arch/core/common/snackbar/my_snackbar.dart';
 import 'package:student_clean_arch/features/course/domain/entity/course_entity.dart';
 import 'package:student_clean_arch/features/course/domain/use_case/course_usecase.dart';
 import 'package:student_clean_arch/features/course/presentation/state/course_state.dart';
@@ -33,6 +35,27 @@ class CourseViewModel extends StateNotifier<CourseState> {
     data.fold(
       (l) => state = state.copyWith(isLoading: false, error: l.error),
       (r) => state = state.copyWith(isLoading: false, courses: r, error: null),
+    );
+  }
+
+  Future<void> deleteCourse(BuildContext context, CourseEntity course) async {
+    state.copyWith(isLoading: true);
+    var data = await courseUsecase.deleteCourse(course.courseId!);
+
+    data.fold(
+      (l) {
+        showSnackBar(message: l.error, context: context, color: Colors.red);
+
+        state = state.copyWith(isLoading: false, error: l.error);
+      },
+      (r) {
+        state.courses.remove(course);
+        state = state.copyWith(isLoading: false, error: null);
+        showSnackBar(
+          message: 'Course delete successfully',
+          context: context,
+        );
+      },
     );
   }
 }

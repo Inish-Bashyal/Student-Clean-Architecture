@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:student_clean_arch/core/common/snackbar/my_snackbar.dart';
-import 'package:student_clean_arch/features/batch/domain/entity/batch_entity.dart';
-import 'package:student_clean_arch/features/batch/presentation/viewmodel/batch_view_model.dart';
-import 'package:student_clean_arch/features/batch/presentation/widget/load_batch.dart';
+import 'package:student_clean_arch/features/course/domain/entity/course_entity.dart';
+import 'package:student_clean_arch/features/course/presentation/viewmodel/course_viewmodel.dart';
 
-class AddBatchView extends ConsumerStatefulWidget {
-  const AddBatchView({super.key});
+import '../widget/load_course.dart';
+
+class AddCourseView extends ConsumerStatefulWidget {
+  const AddCourseView({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddBatchViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _AddCourseViewState();
 }
 
-class _AddBatchViewState extends ConsumerState<AddBatchView> {
-  final batchController = TextEditingController();
+class _AddCourseViewState extends ConsumerState<AddCourseView> {
+  final courseController = TextEditingController();
   var gap = const SizedBox(height: 8);
   final _key = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    var battchState = ref.watch(batchViewModelProvider);
+    var courseState = ref.watch(courseViewModelProvider);
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -31,7 +32,7 @@ class _AddBatchViewState extends ConsumerState<AddBatchView> {
               const Align(
                 alignment: Alignment.center,
                 child: Text(
-                  'Add Batch',
+                  'Add Course',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -40,14 +41,14 @@ class _AddBatchViewState extends ConsumerState<AddBatchView> {
               ),
               gap,
               TextFormField(
-                controller: batchController,
+                controller: courseController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Batch Name',
+                  hintText: 'Course Name',
                 ),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Please enter batch name';
+                    return 'Please enter course name';
                   }
                   return null;
                 },
@@ -58,33 +59,35 @@ class _AddBatchViewState extends ConsumerState<AddBatchView> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_key.currentState!.validate()) {
-                      var batch = BatchEntity(
-                        batchName: batchController.text,
+                      var course = CourseEntity(
+                        courseName: courseController.text,
                       );
 
-                      ref.read(batchViewModelProvider.notifier).addBatch(batch);
-                      if (battchState.error != null) {
+                      ref
+                          .read(courseViewModelProvider.notifier)
+                          .addCourse(course);
+                      if (courseState.error != null) {
                         showSnackBar(
-                          message: battchState.error.toString(),
+                          message: courseState.error.toString(),
                           context: context,
                           color: Colors.red,
                         );
                       } else {
                         showSnackBar(
-                          message: 'Batch added successfully',
+                          message: 'Course added successfully',
                           context: context,
                         );
                       }
                     }
                   },
-                  child: const Text('Add Batch'),
+                  child: const Text('Add Course'),
                 ),
               ),
               gap,
               const Align(
                 alignment: Alignment.center,
                 child: Text(
-                  'List of Batches',
+                  'List of Courses',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -92,14 +95,14 @@ class _AddBatchViewState extends ConsumerState<AddBatchView> {
                 ),
               ),
               gap,
-              if (battchState.isLoading) ...{
+              if (courseState.isLoading) ...{
                 const CircularProgressIndicator(),
-              } else if (battchState.error != null) ...{
-                Text(battchState.error!),
-              } else if (battchState.batches.isNotEmpty) ...{
+              } else if (courseState.error != null) ...{
+                Text(courseState.error!),
+              } else if (courseState.courses.isNotEmpty) ...{
                 Expanded(
-                  child: LoadBatch(
-                    lstBatch: battchState.batches,
+                  child: LoadCourse(
+                    lstCourse: courseState.courses,
                     ref: ref,
                   ),
                 ),

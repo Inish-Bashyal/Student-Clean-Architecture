@@ -26,56 +26,58 @@ class _CourseViewState extends ConsumerState<CourseView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _courseController,
-              decoration: const InputDecoration(
-                labelText: 'Course Name',
-              ),
-              validator: ((value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter first name';
-                }
-                return null;
-              }),
-            ),
-            _gap,
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_key.currentState!.validate()) {
-                    var course = CourseEntity(
-                      courseName: _courseController.text,
-                    );
-
-                    ref
-                        .read(courseViewModelProvider.notifier)
-                        .addCourse(course);
-
-                    if (courseState.error != null) {
-                      showSnackBar(
-                        message: courseState.error.toString(),
-                        context: context,
-                        color: Colors.red,
-                      );
-                    } else {
-                      showSnackBar(
-                        message: 'Course added successfully',
-                        context: context,
-                      );
-                    }
+        child: Form(
+          key: _key,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _courseController,
+                decoration: const InputDecoration(
+                  labelText: 'Course Name',
+                ),
+                validator: ((value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter course name';
                   }
-                },
-                child: const Text('Add Course'),
+                  return null;
+                }),
               ),
-            ),
-            _gap,
-            Flexible(
-              child: CourseWidget(courseList: courseState.courses),
-            ),
-          ],
+              _gap,
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_key.currentState!.validate()) {
+                      var course = CourseEntity(
+                        courseName: _courseController.text,
+                      );
+
+                      ref
+                          .read(courseViewModelProvider.notifier)
+                          .addCourse(course);
+                      if (courseState.error != null) {
+                        showSnackBar(
+                          message: courseState.error.toString(),
+                          context: context,
+                          color: Colors.red,
+                        );
+                      } else {
+                        showSnackBar(
+                          message: 'Course added successfully',
+                          context: context,
+                        );
+                      }
+                    }
+                  },
+                  child: const Text('Add Course'),
+                ),
+              ),
+              _gap,
+              Flexible(
+                child: CourseWidget(courseList: courseState.courses),
+              ),
+            ],
+          ),
         ),
       ),
     );

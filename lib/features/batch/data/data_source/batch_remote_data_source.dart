@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:student_clean_arch/core/network/remote/http_service.dart';
 import 'package:student_clean_arch/core/failure/failure.dart';
 import 'package:student_clean_arch/core/network/remote/api_endpoint.dart';
+import 'package:student_clean_arch/core/shared_prefs/user_shared_prefs.dart';
 import 'package:student_clean_arch/features/batch/data/dto/get_all_batch_dto.dart';
 import 'package:student_clean_arch/features/batch/data/model/batch_api_model.dart';
 import 'package:student_clean_arch/features/batch/domain/entity/batch_entity.dart';
@@ -12,16 +13,19 @@ final batchRemoteDataSourceProvider = Provider(
   (ref) => BatchRemoteDataSource(
     dio: ref.read(httpServiceProvider),
     batchApiModel: ref.read(batchApiModelProvider),
+    userSharedPrefs: ref.read(userSharedPrefsProvider),
   ),
 );
 
 class BatchRemoteDataSource {
   final Dio dio;
   final BatchApiModel batchApiModel;
+  final UserSharedPrefs userSharedPrefs;
 
   BatchRemoteDataSource({
     required this.dio,
     required this.batchApiModel,
+    required this.userSharedPrefs,
   });
 
   Future<Either<Failure, bool>> addBatch(BatchEntity batch) async {
@@ -70,6 +74,44 @@ class BatchRemoteDataSource {
       return Left(
         Failure(
           error: e.error.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<Either<Failure, bool>> deleteBatch(String batchId) async {
+    try {
+      // Get the token from shared prefs
+      String? token;
+      var data = await userSharedPrefs.getUserToken();
+      data.fold(
+        (l) => token = null,
+        (r) => token = r!,
+      );
+
+      Response response = await dio.delete(
+        ApiEndpoints.deleteBatch + batchId,
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return const Right(true);
+      } else {
+        return Left(
+          Failure(
+            error: response.data["message"],
+            statusCode: response.statusCode.toString(),
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return Left(
+        Failure(
+          error: e.error.toString(),
+          statusCode: e.response?.statusCode.toString() ?? '0',
         ),
       );
     }
