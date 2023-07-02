@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:student_clean_arch/features/batch/domain/entity/batch_entity.dart';
 import 'package:student_clean_arch/features/batch/presentation/viewmodel/batch_view_model.dart';
-import 'package:student_clean_arch/features/course/domain/entity/course_entity.dart';
 
 class LoadBatch extends StatelessWidget {
   final WidgetRef ref;
@@ -34,7 +33,7 @@ class LoadBatch extends StatelessWidget {
                           Navigator.pop(context);
                           ref
                               .read(batchViewModelProvider.notifier)
-                              .deleteCourse(context, lstBatch[index]);
+                              .deleteBatch(context, lstBatch[index]);
                         },
                         child: const Text('Yes')),
                   ],

@@ -30,7 +30,6 @@ class BatchLocalRepositoryImpl implements IBatchRepository {
 
   @override
   Future<Either<Failure, bool>> deleteBatch(String id) {
-    // TODO: implement deleteBatch
     throw UnimplementedError();
   }
 }

@@ -4,7 +4,6 @@ import 'package:student_clean_arch/core/common/snackbar/my_snackbar.dart';
 import 'package:student_clean_arch/features/batch/domain/entity/batch_entity.dart';
 import 'package:student_clean_arch/features/batch/domain/use_case/batch_use_case.dart';
 import 'package:student_clean_arch/features/batch/presentation/state/batch_state.dart';
-import 'package:student_clean_arch/features/course/domain/entity/course_entity.dart';
 
 final batchViewModelProvider =
     StateNotifierProvider<BatchViewModel, BatchState>(
@@ -38,7 +37,7 @@ class BatchViewModel extends StateNotifier<BatchState> {
     );
   }
 
-  Future<void> deleteCourse(BuildContext context, BatchEntity batch) async {
+  Future<void> deleteBatch(BuildContext context, BatchEntity batch) async {
     state.copyWith(isLoading: true);
     var data = await batchUseCase.deleteBatch(batch.batchId!);
 

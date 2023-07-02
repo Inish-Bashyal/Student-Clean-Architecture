@@ -43,15 +43,15 @@ class AuthViewModel extends StateNotifier<AuthState> {
     data.fold(
       (failure) {
         state = state.copyWith(isLoading: false, error: failure.error);
-        showSnackBar(
-          message: 'Invalid Credentials',
-          context: context,
-          color: Colors.red,
-        );
+        // showSnackBar(
+        //   message: 'Invalid Credentials',
+        //   context: context,
+        //   color: Colors.red,
+        // );
       },
       (success) {
         state = state.copyWith(isLoading: false, error: null);
-        Navigator.popAndPushNamed(context, AppRoute.homeRoute);
+        // Navigator.popAndPushNamed(context, AppRoute.homeRoute);
       },
     );
 
